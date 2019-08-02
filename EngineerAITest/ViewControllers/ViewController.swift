@@ -47,40 +47,12 @@ class ViewController: UIViewController {
         self.callPostAPI()
     }
     
-    //MARK:- Userdefined methods
-    func setNavigationTitle()  {
-        let arrFilter = self.responseArray.filter { (post) -> Bool in
-            return post.isPostSelected
-        }
-        if arrFilter.count == 0 {
-            self.title = "Number of selected posts: 0"
-        } else {
-            self.title = arrFilter.count > 1 ? "Number of selected posts: " + "\(arrFilter.count)" : "Number of selected post: " + "\(arrFilter.count)"
-        }
-    }
-    
-    // MARK:- Refresh Control Methods
-    func addRefreshControl() {
-        if self.refreshControl == nil
-        {
-            refreshControl = UIRefreshControl()
-            refreshControl?.attributedTitle = NSAttributedString(string: "Pull to refresh")
-            refreshControl?.addTarget(self, action: #selector(pullToRefresh), for: UIControl.Event.valueChanged)
-            self.tblView.addSubview(refreshControl!)
-        }
-    }
-    
-    @objc func pullToRefresh() {
-        self.pageCount = 0
-        self.callPostAPI()
-    }
-    
     //MARK:- API methods
     func callPostAPI() {
         
         let sourceURL = "https://hn.algolia.com/api/v1/search_by_date?tags=story&page=" + "\(self.pageCount)"
         
-        //Network indicatior
+        // Show Network indicatior
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
         
         Alamofire.request(sourceURL, method: .get, parameters: nil, encoding: URLEncoding.default, headers: nil).responseJSON { (response) in
@@ -130,6 +102,33 @@ class ViewController: UIViewController {
         }
     }
     
+    //MARK:- Custom methods
+    func setNavigationTitle()  {
+        let arrFilter = self.responseArray.filter { (post) -> Bool in
+            return post.isPostSelected
+        }
+        if arrFilter.count == 0 {
+            self.title = "Number of selected posts: 0"
+        } else {
+            self.title = arrFilter.count > 1 ? "Number of selected posts: " + "\(arrFilter.count)" : "Number of selected post: " + "\(arrFilter.count)"
+        }
+    }
+    
+    // MARK:- Refresh Control Methods
+    func addRefreshControl() {
+        if self.refreshControl == nil
+        {
+            refreshControl = UIRefreshControl()
+            refreshControl?.attributedTitle = NSAttributedString(string: "Pull to refresh")
+            refreshControl?.addTarget(self, action: #selector(pullToRefresh), for: UIControl.Event.valueChanged)
+            self.tblView.addSubview(refreshControl!)
+        }
+    }
+    
+    @objc func pullToRefresh() {
+        self.pageCount = 0
+        self.callPostAPI()
+    }
 }
 
 //MARK: - Table View Delegate And Datasource Methods

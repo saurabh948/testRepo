@@ -46,9 +46,9 @@ struct PostDate {
     static func date(fromString stringDate:String ,withFormat format:PostDateFormat , timeZone:TimeZoneEnum = .server) -> Date? {
         
         let formatter = DateFormatter()
-        formatter.dateFormat = format.text
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = timeZone.obj
+        formatter.dateFormat    = format.text
+        formatter.locale        = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone      = timeZone.obj
         
         if let date = formatter.date(from: stringDate){
             return date
@@ -58,10 +58,10 @@ struct PostDate {
     
     static func string(fromDate date:Date, withFormat format:PostDateFormat , timeZone:TimeZoneEnum = .local) -> String {
         
-        let formatter = DateFormatter()
-        formatter.dateFormat = format.text
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZoneEnum.local.obj 
+        let formatter           = DateFormatter()
+        formatter.dateFormat    = format.text
+        formatter.locale        = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone      = TimeZoneEnum.local.obj
         return formatter.string(from: date)
     }
 }
