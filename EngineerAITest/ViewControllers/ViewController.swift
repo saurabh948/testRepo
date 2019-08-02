@@ -26,29 +26,32 @@ class ViewController: UIViewController {
     //MARK:- Controller Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Set navigation title
-        self.setNavigationTitle()
-        
-        //Add Pull to refresh
-        self.addRefreshControl()
+        prepareView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        //
         tblView.estimatedRowHeight  = 70
         tblView.rowHeight           = UITableView.automaticDimension
         
-        // Call webservice
-        self.refreshControl?.beginRefreshing()
-        self.pageCount = 0
-        self.callPostAPI()
+        //Webservice Call
+        refreshControl?.beginRefreshing()
+        pageCount = 0
+        callPostAPI()
+    }
+    
+    //MARK:- View Methods
+    private func prepareView() {
+        // Set navigation title
+        setNavigationTitle()
+        
+        // Add Pull to refresh
+        addRefreshControl()
     }
     
     //MARK:- API methods
-    func callPostAPI() {
+    private func callPostAPI() {
         
         let sourceURL = "https://hn.algolia.com/api/v1/search_by_date?tags=story&page=" + "\(self.pageCount)"
         
@@ -103,7 +106,7 @@ class ViewController: UIViewController {
     }
     
     //MARK:- Custom methods
-    func setNavigationTitle()  {
+    private func setNavigationTitle()  {
         let arrFilter = self.responseArray.filter { (post) -> Bool in
             return post.isPostSelected
         }
@@ -115,7 +118,7 @@ class ViewController: UIViewController {
     }
     
     // MARK:- Refresh Control Methods
-    func addRefreshControl() {
+    private func addRefreshControl() {
         if self.refreshControl == nil
         {
             refreshControl = UIRefreshControl()
@@ -125,7 +128,7 @@ class ViewController: UIViewController {
         }
     }
     
-    @objc func pullToRefresh() {
+    @objc private func pullToRefresh() {
         self.pageCount = 0
         self.callPostAPI()
     }
@@ -144,7 +147,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource{
         let post = self.responseArray[indexPath.row]
         
         cell.lblTitle.text      = post.title
-        cell.lblDate.text       = post.created_at
+        cell.lblDate.text       = post.createdOn
         cell.toggleSwitch.isOn  = post.isPostSelected
         cell.backgroundColor    = post.isPostSelected ? UIColor.lightGray : UIColor.white
         
@@ -155,14 +158,6 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource{
         }
         
         return cell
-    }
-    
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 70
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
